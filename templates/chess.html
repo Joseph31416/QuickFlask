@@ -1,16 +1,99 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <!-- Change your page title -->
-        <title>This is the page title</title>
-        <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
-    </head>
-    <body>
-        <!-- Modify this section START -->
-        <p>[Placeholder for chess board]</p>
-        <p>Add a form here to get player input. Don't forget the submit button.</p>
-        <p>We’ll have some code here to insert error messages, if any. Stay tuned.</p>
-        <!-- Modify this section END -->
-    </body>
+<html>
+
+  <head>
+    <!-- <style>
+      table, th, td {
+        border: 1px solid black
+      }
+    </style> -->
+  </head>
+
+  <body>
+   
+    <header>
+      <h1>ChessV1</h1>
+    </header>
+    <center>
+    <table style=:width:100%">
+      <tr>
+        <td>&nbsp</td>
+        <td>0</td>
+        <td>1</td>
+        <td>2</td>
+        <td>3</td>
+        <td>4</td>
+        <td>5</td>
+        <td>6</td>
+        <td>7</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td>♜</td>
+        <td>♞</td>
+        <td>♝</td>
+        <td>♛</td>
+        <td>♚</td>
+        <td>♝</td>
+        <td>♞</td>
+        <td>♜</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>♟</td>
+        <td>♟</td>
+        <td>♟</td>
+        <td>♟</td>
+        <td>♟</td>
+        <td>♟</td>
+        <td>♟</td>
+        <td>♟</td>
+      </tr>
+      <tr>
+        <td>5</td>
+      </tr>
+      <tr>
+        <td>4</td>
+      </tr>
+      <tr>
+        <td>3</td>
+      </tr>
+      <tr>
+        <td>2</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>♙</td>
+        <td>♙</td>
+        <td>♙</td>
+        <td>♙</td>
+        <td>♙</td>
+        <td>♙</td>
+        <td>♙</td>
+        <td>♙</td>
+      </tr>
+      <tr>
+        <td>0</td>
+        <td>♖</td>
+        <td>♘</td>
+        <td>♗</td>
+        <td>♕</td>
+        <td>♔</td>
+        <td>♗</td>
+        <td>♘</td>
+        <td>♖</td>
+      </tr>
+    </table>
+    <br>
+    <form>
+      <label for="move">White player:</label>
+      <input type="text" id="move" name="move">
+      <br>
+      <br>
+        <input type="submit" value="Move">
+    </form>
+    </center>
+
+
+  </body>
 </html>
