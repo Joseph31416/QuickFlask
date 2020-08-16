@@ -1,10 +1,14 @@
 from flask import Flask
-from flask import render_template, redirect
+from flask import render_template, redirect, request
 from chess import WebInterface, Board
 
 app = Flask(__name__)
 ui = WebInterface()
 game = Board()
+# board = [[0, 1, 2, 3, 4, 5, 6, 7],
+# ['♜','♜','♜','♜','♜','♜','♜','♜'],
+# ['&nbsp','&nbsp','&nbsp','&nbsp','&nbsp','&nbsp','&nbsp','&nbsp'],
+# ['♜','♜','♜','♜','♜','♜','♜','♜']]
 
 @app.route('/')
 def root():
@@ -22,14 +26,42 @@ def newgame():
     ui.btnlabel = 'Move'
     return redirect('/play')
 
-@app.route('/play')
+@app.route('/play', methods=['POST', 'GET'])
 def play():
+    ui.errmsg = None
+    if not game.new:
+        move = request.form['move']
+    else:
+        move = None
+        game.new = False
+    if move is None:
+        return render_template('test.html', ui=ui)  
+    else:
+        game.inputmove = move
+        v_move = game.prompt()
+        if type(v_move) == tuple and len(v_move) == 2:
+            start, end = v_move
+            game.update(start, end)
+            game.next_turn()
+            ui.inputlabel = f'{game.turn} player: '
+            ui.board = game.display()
+            return render_template('test.html', ui=ui)  
+        else:
+            ui.errmsg = 'Invalid move. Please enter your move in the following format: __ __, _ represents a digit from 0-7.'
+            return render_template('test.html', ui=ui)
+
     # TODO: get player move from GET request object
     # TODO: if there is no player move, render the page template
-    return render_template('chess.html')
+    
+    # return render_template('chess.html', ui=ui)
     # TODO: Validate move, redirect player back to /play again if move is invalid
     # If move is valid, check for pawns to promote
     # Redirect to /promote if there are pawns to promote, otherwise 
+  
+@app.route('/error')
+def error():
+  ui.errmsg = None
+  return redirect('/play')
 
 @app.route('/promote')
 def promote():

@@ -4,6 +4,7 @@ class WebInterface:
         self.btnlabel = None
         self.errmsg = None
         self.board = None
+        self.turn = None
 
 
 
@@ -40,6 +41,7 @@ class BasePiece:
 
 class King(BasePiece):
     name = 'king'
+    sym = {'white': '♔', 'black': '♚'}
     def __repr__(self):
         return f'King({repr(self.colour)})'
     
@@ -51,6 +53,7 @@ class King(BasePiece):
 
 class Queen(BasePiece):
     name = 'queen'
+    sym = {'white': '♕', 'black': '♛'}
     def __repr__(self):
         return f'Queen({repr(self.colour)})'
 
@@ -66,6 +69,7 @@ class Queen(BasePiece):
 
 class Bishop(BasePiece):
     name = 'bishop'
+    sym = {'white': '♗', 'black': '♝'}
     def __repr__(self):
         return f'Bishop({repr(self.colour)})'
 
@@ -79,6 +83,7 @@ class Bishop(BasePiece):
 
 class Knight(BasePiece):
     name = 'knight'
+    sym = {'white': '♘', 'black': '♞'}
     def __repr__(self):
         return f'Knight({repr(self.colour)})'
 
@@ -92,6 +97,7 @@ class Knight(BasePiece):
 
 class Rook(BasePiece):
     name = 'rook'
+    sym = {'white': '♖', 'black': '♜'}
     def __repr__(self):
         return f'Rook({repr(self.colour)})'
 
@@ -118,6 +124,7 @@ class Rook(BasePiece):
 
 class Pawn(BasePiece):
     name = 'pawn'
+    sym = {'white': '♙', 'black': '♟︎'}
     def __repr__(self):
         return f'Pawn({repr(self.colour)})'
 
@@ -170,6 +177,8 @@ class Board:
         self._position = {}
         self.winner = None
         self.checkmate = None
+        self.inputmove = None
+        self.new = True
     
     def coords(self):
         return list(self._position.keys())
@@ -363,34 +372,60 @@ class Board:
         First letter is the colour (W for white, B for black).
         Second letter is the name (Starting letter for each piece).
         '''
-        if self.debug:
-            print('== DEBUG MODE ON ==')
-        # helper function to generate symbols for piece
-        def sym(piece):
-            colour_sym = piece.colour[0].upper()
-            piece_sym = piece.name[0].upper()
-            return f'{colour_sym}{piece_sym}'
+        # if self.debug:
+        #     print('== DEBUG MODE ON ==')
+        # # helper function to generate symbols for piece
+        # def sym(piece):
+        #     colour_sym = piece.colour[0].upper()
+        #     piece_sym = piece.name[0].upper()
+        #     return f'{colour_sym}{piece_sym}'
 
-        # Row 7 is at the top, so print in reverse order
-        print(' ' * 4, end='')
-        print('  '.join([f'{i:2}' for i in range(8)]), end='\n\n')
-        for row in range(7, -1, -1):
-            print(f'{row:2}  ', end='')
-            for col in range(8):
+        # # Row 7 is at the top, so print in reverse order
+        # print(' ' * 4, end='')
+        # print('  '.join([f'{i:2}' for i in range(8)]), end='\n\n')
+        # for row in range(7, -1, -1):
+        #     print(f'{row:2}  ', end='')
+        #     for col in range(8):
+        #         coord = (col, row)  # tuple
+        #         if coord in self.coords():
+        #             piece = self.get_piece(coord)
+        #             print(f'{sym(piece)}', end='')
+        #         else:
+        #             piece = None
+        #             print('  ', end='')
+        #         if col == 7:     # Put line break at the end
+        #             print('')
+        #         else:            # Print two spaces between pieces
+        #             print('  ', end='')
+        #     print(' '*15)
+        main_board = []
+       
+        for row in range(8, -1, -1):
+            board_list =[]
+            for col in range(0,8):
+                
+                if row == 8 and col == 0:
+                    board_list.append(' ')
+                
+                if row == 8:
+                    board_list.append(col)
+                       
+                if col == 0 and row != 8:
+                    board_list.append(row)
+                        
                 coord = (col, row)  # tuple
                 if coord in self.coords():
                     piece = self.get_piece(coord)
-                    print(f'{sym(piece)}', end='')
+                    board_list.append(piece.sym[piece.colour])
+                        
                 else:
                     piece = None
-                    print('  ', end='')
-                if col == 7:     # Put line break at the end
-                    print('')
-                else:            # Print two spaces between pieces
-                    print('  ', end='')
-            print(' '*15)
-            if self.checkmate is not None:
-                print(f'{self.checkmate} is checkmated!')
+                    if row != 8:
+                        board_list.append(' ')
+                        
+                        
+            main_board.append(board_list)
+        return main_board
 
     def prompt(self):
         if self.debug:
@@ -413,19 +448,21 @@ class Board:
             end = (int(end[0]), int(end[1]))
             return (start, end)
 
-        while True:
-            inputstr = input(f'{self.turn.title()} player: ')
-            if not valid_format(inputstr):
-                print('Invalid move. Please enter your move in the '
-                      'following format: __ __, _ represents a digit.')
-            elif not valid_num(inputstr):
-                print('Invalid move. Move digits should be 0-7.')
+        inputstr = self.inputmove
+        if not valid_format(inputstr):
+            print('Invalid move. Please enter your move in the '
+                    'following format: __ __, _ represents a digit.')
+        elif not valid_num(inputstr):
+            print('Invalid move. Move digits should be 0-7.')
+        else:
+            start, end = split_and_convert(inputstr)
+            if self.movetype(start, end) is None:
+                print('Invalid move. Please make a valid move.')
+                print(f'self.move: {self.move}')
             else:
-                start, end = split_and_convert(inputstr)
-                if self.movetype(start, end) is None:
-                    print('Invalid move. Please make a valid move.')
-                else:
-                    return start, end
+                print(f'start: {start}')
+                print(f'end: {end}')
+                return start, end
 
     def update(self, start, end):
         '''
@@ -446,6 +483,8 @@ class Board:
             self.move(start, end)
         elif movetype == 'move':
             self.printmove(start, end)
+            print(f'start_update: {start}')
+            print(f'end_update: {end}')
             self.move(start, end)
         else:
             raise MoveError('Unknown error, please report '
