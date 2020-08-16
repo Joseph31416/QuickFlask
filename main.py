@@ -5,10 +5,6 @@ from chess import WebInterface, Board
 app = Flask(__name__)
 ui = WebInterface()
 game = Board()
-# board = [[0, 1, 2, 3, 4, 5, 6, 7],
-# ['♜','♜','♜','♜','♜','♜','♜','♜'],
-# ['&nbsp','&nbsp','&nbsp','&nbsp','&nbsp','&nbsp','&nbsp','&nbsp'],
-# ['♜','♜','♜','♜','♜','♜','♜','♜']]
 
 @app.route('/')
 def root():
@@ -35,7 +31,7 @@ def play():
         move = None
         game.new = False
     if move is None:
-        return render_template('test.html', ui=ui)  
+        return render_template('chess.html', ui=ui)  
     else:
         game.inputmove = move
         v_move = game.prompt()
@@ -45,10 +41,10 @@ def play():
             game.next_turn()
             ui.inputlabel = f'{game.turn} player: '
             ui.board = game.display()
-            return render_template('test.html', ui=ui)  
+            return render_template('chess.html', ui=ui)  
         else:
             ui.errmsg = 'Invalid move. Please enter your move in the following format: __ __, _ represents a digit from 0-7.'
-            return render_template('test.html', ui=ui)
+            return render_template('chess.html', ui=ui)
 
     # TODO: get player move from GET request object
     # TODO: if there is no player move, render the page template
