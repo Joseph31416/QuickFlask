@@ -46,18 +46,11 @@ def play():
             ui.errmsg = 'Invalid move. Please enter your move in the following format: __ __, _ represents a digit from 0-7.'
             return render_template('chess.html', ui=ui)
 
-    # TODO: get player move from GET request object
-    # TODO: if there is no player move, render the page template
-    
-    # return render_template('chess.html', ui=ui)
-    # TODO: Validate move, redirect player back to /play again if move is invalid
+    # TODO: get player move from GET request object (Done)
+    # TODO: if there is no player move, render the page template (Done)
+    # TODO: Validate move, redirect player back to /play again if move is invalid (Done)
     # If move is valid, check for pawns to promote
     # Redirect to /promote if there are pawns to promote, otherwise 
-  
-@app.route('/error')
-def error():
-  ui.errmsg = None
-  return redirect('/play')
 
 @app.route('/promote')
 def promote():
