@@ -41,11 +41,9 @@ def play():
             game.update(start, end)
             piece = game.get_piece(end)
             
-            if (str(piece) == 'white pawn' or str(piece) == 'black pawn') and (end[1] == 0 or end[1] == 7):
+            if game.checkforpromotion():
                 return redirect('/promote')
                 
-                # ui.errmsg = f'{yes}'
-                # return render_template('chess.html', ui=ui)
                 
             else:
                 game.next_turn()
@@ -68,6 +66,7 @@ def promote():
     if the pawn is at the end of the board
     can chose to promote the piece to a desired one
     '''
-    
+    ui.errmsg = 'It works i guess'
+    return render_template('chess.html', ui=ui)
 
 app.run('0.0.0.0')
