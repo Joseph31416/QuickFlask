@@ -238,6 +238,9 @@ class Board:
                     promoted_piece = PieceClass(colour)
                     self.remove(coord)
                     self.add(coord, promoted_piece)
+    # def checkpromote(self,pawn):
+    #     if pawn.coords() == 
+    #     if pawn is at end end of board --> promote()
 
     def king_and_rook_unmoved(self, colour, rook_coord):
         row = rook_coord[1]

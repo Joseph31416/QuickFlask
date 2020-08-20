@@ -35,13 +35,23 @@ def play():
     else:
         game.inputmove = move
         v_move = game.prompt()
+        
         if type(v_move) == tuple and len(v_move) == 2:
             start, end = v_move
             game.update(start, end)
-            game.next_turn()
-            ui.inputlabel = f'{game.turn} player: '
-            ui.board = game.display()
-            return render_template('chess.html', ui=ui)  
+            piece = game.get_piece(end)
+            
+            if (str(piece) == 'white pawn' or str(piece) == 'black pawn') and (end[1] == 0 or end[1] == 7):
+                return redirect('/promote')
+                
+                # ui.errmsg = f'{yes}'
+                # return render_template('chess.html', ui=ui)
+                
+            else:
+                game.next_turn()
+                ui.inputlabel = f'{game.turn} player: '
+                ui.board = game.display()
+                return render_template('chess.html', ui=ui)  
         else:
             ui.errmsg = 'Invalid move. Please enter your move in the following format: __ __, _ represents a digit from 0-7.'
             return render_template('chess.html', ui=ui)
@@ -54,6 +64,10 @@ def play():
 
 @app.route('/promote')
 def promote():
-    pass
+    '''
+    if the pawn is at the end of the board
+    can chose to promote the piece to a desired one
+    '''
+    
 
 app.run('0.0.0.0')
