@@ -8,6 +8,7 @@ class WebInterface:
 
 
 
+
 class MoveError(Exception):
     '''Custom error for invalid moves.'''
     pass
@@ -238,6 +239,19 @@ class Board:
                     promoted_piece = PieceClass(colour)
                     self.remove(coord)
                     self.add(coord, promoted_piece)
+
+    # def promotioncheck (self, PieceClass=None):
+    #     for coord in self.coords():
+    #         row = coord[1]
+    #         piece = self.get_piece(coord)
+    #         for opprow, colour in zip([0, 7], ['black', 'white']):
+    #             if row == opprow and piece.name == 'pawn' \
+    #                     and piece.colour == colour:
+    #                     return True
+
+        
+
+       
 
     def king_and_rook_unmoved(self, colour, rook_coord):
         row = rook_coord[1]
