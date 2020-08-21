@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import render_template, redirect, request
 from chess import WebInterface, Board, Pawn, BasePiece
+from MoveHistory import MoveHistory
 
 app = Flask(__name__)
 ui = WebInterface()
