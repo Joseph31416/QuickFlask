@@ -1,6 +1,6 @@
 from flask import Flask
 from flask import render_template, redirect, request
-from chess import WebInterface, Board
+from chess import WebInterface, Board, Pawn, BasePiece
 
 app = Flask(__name__)
 ui = WebInterface()
@@ -32,6 +32,12 @@ def play():
         game.new = False
     if move is None:
         return render_template('chess.html', ui=ui)  
+    elif move.lower() in 'kbrq':
+        game.promotepawns(move.lower()) 
+        game.next_turn()
+        ui.inputlabel = f'{game.turn} player: '
+        ui.board = game.display()
+        return render_template('chess.html', ui=ui) 
     else:
         game.inputmove = move
         v_move = game.prompt()
@@ -43,8 +49,6 @@ def play():
             
             if game.checkforpromotion():
                 return redirect('/promote')
-                
-                
             else:
                 game.next_turn()
                 ui.inputlabel = f'{game.turn} player: '
@@ -60,13 +64,14 @@ def play():
     # If move is valid, check for pawns to promote
     # Redirect to /promote if there are pawns to promote, otherwise 
 
-@app.route('/promote')
+@app.route('/promote', methods=['POST', 'GET'])
 def promote():
     '''
     if the pawn is at the end of the board
     can chose to promote the piece to a desired one
     '''
-    ui.errmsg = 'It works i guess'
-    return render_template('chess.html', ui=ui)
+    # ui.errmsg = 'It works i guess'
+    ui.board = game.display()
+    return render_template('promotion.html', ui=ui)
 
 app.run('0.0.0.0')
