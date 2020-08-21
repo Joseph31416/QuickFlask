@@ -237,12 +237,28 @@ class Board:
                     
                     
 
-    def promotepawns(self, PieceClass=None):
-        if PieceClass is None:
-            PieceClass = self.promoteprompt()
+    def promotepawns(self, value):
+        value = value.lower()
+        if value == 'k':
+            PieceClass = Knight
+        elif value == 'b':
+            PieceClass = Bishop
+        elif value == 'r':
+            PieceClass = Rook
+        elif value == 'q':
+            PieceClass = Queen
+        colour = self.turn            
+        for coord in self.coords():
+            row = coord[1]
+            piece = self.get_piece(coord)
+            for opprow, colour in zip([0, 7], ['black', 'white']):
+                if row == opprow and piece.name == 'pawn' \
+                        and piece.colour == colour:
+                    pos = coord
+                    break
         promoted_piece = PieceClass(colour)
-        self.remove(coord)
-        self.add(coord, promoted_piece)
+        self.remove(pos)
+        self.add(pos, promoted_piece)
     
     def king_and_rook_unmoved(self, colour, rook_coord):
         row = rook_coord[1]
@@ -365,6 +381,7 @@ class Board:
         for x in range(0, 8):
             self.add((x, 1), Pawn(colour))
         
+        # self.add((5, 0), Pawn('white'))
         self.turn = 'white'
 
         for piece in self.pieces():
