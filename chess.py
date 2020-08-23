@@ -300,7 +300,6 @@ class Board:
         if self.debug:
             print(f'== movetype({start}, {end}) ==')
         if start is None or end is None:
-            print(1)
             return None
         start_piece = self.get_piece(start)
         end_piece = self.get_piece(end)
@@ -486,8 +485,8 @@ class Board:
                 print('Invalid move. Please make a valid move.')
                 print(f'self.move: {self.move}')
             else:
-                print(f'start: {start}')
-                print(f'end: {end}')
+                # print(f'start: {start}')
+                # print(f'end: {end}')
                 return start, end
 
     def update(self, start, end):

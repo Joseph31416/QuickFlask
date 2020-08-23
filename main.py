@@ -94,7 +94,7 @@ def promote():
 def undo():
     if movehistory.head is not None:
         coord = movehistory.pop()
-        print(coord)
+        # print(coord)
         start =coord[0][0]
         end = coord[1][0]
         start_piece = coord[0][1]
