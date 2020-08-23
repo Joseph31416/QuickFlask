@@ -198,6 +198,8 @@ class Board:
     def remove(self, pos):
         del self._position[pos]
 
+
+
     def castle(self, start, end):
         '''Carry out castling move (assuming move is validated)'''
         self.move(start, end)
@@ -298,6 +300,7 @@ class Board:
         if self.debug:
             print(f'== movetype({start}, {end}) ==')
         if start is None or end is None:
+            print(1)
             return None
         start_piece = self.get_piece(start)
         end_piece = self.get_piece(end)
@@ -438,7 +441,8 @@ class Board:
                 coord = (col, row)  # tuple
                 if coord in self.coords():
                     piece = self.get_piece(coord)
-                    board_list.append(piece.sym[piece.colour])
+                    if piece is not None:
+                        board_list.append(piece.sym[piece.colour])
                         
                 else:
                     piece = None
@@ -505,8 +509,6 @@ class Board:
             self.move(start, end)
         elif movetype == 'move':
             self.printmove(start, end)
-            print(f'start_update: {start}')
-            print(f'end_update: {end}')
             self.move(start, end)
         else:
             raise MoveError('Unknown error, please report '

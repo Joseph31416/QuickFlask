@@ -6,6 +6,7 @@ from MoveHistory import MoveHistory
 app = Flask(__name__)
 ui = WebInterface()
 game = Board()
+movehistory = MoveHistory(10)
 
 @app.route('/')
 def root():
@@ -26,35 +27,50 @@ def newgame():
 @app.route('/play', methods=['POST', 'GET'])
 def play():
     ui.errmsg = None
+
     if not game.new:
         move = request.form['move']
+
     else:
         move = None
         game.new = False
+
     if move is None:
+        ui.board = game.display()
+        ui.inputlabel = f'{game.turn} player: '
         return render_template('chess.html', ui=ui)  
+        
     elif move.lower() in 'kbrq':
         game.promotepawns(move.lower()) 
         game.next_turn()
         ui.inputlabel = f'{game.turn} player: '
         ui.board = game.display()
         return render_template('chess.html', ui=ui) 
+
+    
     else:
         game.inputmove = move
         v_move = game.prompt()
         
         if type(v_move) == tuple and len(v_move) == 2:
             start, end = v_move
+            start_piece = game.get_piece(start)
+            end_piece = game.get_piece(end)
+            tuplee = (start,start_piece),(end,end_piece)
+            movehistory.push((tuplee))
             game.update(start, end)
-            piece = game.get_piece(end)
-            
-            if game.checkforpromotion():
-                return redirect('/promote')
+            if game.winner is None:
+                piece = game.get_piece(end)
+                # print(f'MoveHistory: {movehistory.data}')
+                if game.checkforpromotion():
+                    return redirect('/promote')
+                else:
+                    game.next_turn()
+                    ui.inputlabel = f'{game.turn} player: '
+                    ui.board = game.display()
+                    return render_template('chess.html', ui=ui)  
             else:
-                game.next_turn()
-                ui.inputlabel = f'{game.turn} player: '
-                ui.board = game.display()
-                return render_template('chess.html', ui=ui)  
+                return render_template('winner.html')
         else:
             ui.errmsg = 'Invalid move. Please enter your move in the following format: __ __, _ represents a digit from 0-7.'
             return render_template('chess.html', ui=ui)
@@ -62,8 +78,8 @@ def play():
     # TODO: get player move from GET request object (Done)
     # TODO: if there is no player move, render the page template (Done)
     # TODO: Validate move, redirect player back to /play again if move is invalid (Done)
-    # If move is valid, check for pawns to promote
-    # Redirect to /promote if there are pawns to promote, otherwise 
+    # If move is valid, check for pawns to promote (Done)
+    # Redirect to /promote if there are pawns to promote, otherwise (Done)
 
 @app.route('/promote', methods=['POST', 'GET'])
 def promote():
@@ -71,8 +87,38 @@ def promote():
     if the pawn is at the end of the board
     can chose to promote the piece to a desired one
     '''
-    # ui.errmsg = 'It works i guess'
     ui.board = game.display()
     return render_template('promotion.html', ui=ui)
+
+@app.route('/undo', methods=['POST', 'GET'])
+def undo():
+    if movehistory.head is not None:
+        coord = movehistory.pop()
+        print(coord)
+        start =coord[0][0]
+        end = coord[1][0]
+        start_piece = coord[0][1]
+        end_piece = coord[1][1]
+
+        # print(f'start_coord: {start}')
+        # print(f'end_coord: {end}')
+        # print(f'start_piece: {start_piece}')
+        # print(f'end_piece: {end_piece}')
+        # print(f'piece_at_end: {game.get_piece(end)}')
+
+        if end_piece is None:
+            # print(f'end_coord_in_if: {end}')
+            game.remove(end)
+            game.add(start, start_piece)
+
+        else:
+            game.add(start,end_piece)
+            game.remove(end)
+            game.add(end,start_piece)
+        
+        game.next_turn()
+
+    game.new = True
+    return  redirect('/play')
 
 app.run('0.0.0.0')
