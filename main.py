@@ -70,7 +70,7 @@ def play():
                     ui.board = game.display()
                     return render_template('chess.html', ui=ui)  
             else:
-                return render_template('winner.html')
+                return render_template('winner.html', ui=ui )
         else:
             ui.errmsg = 'Invalid move. Please enter your move in the following format: __ __, _ represents a digit from 0-7.'
             return render_template('chess.html', ui=ui)
