@@ -28,27 +28,42 @@ def newgame():
 def play():
     ui.errmsg = None
 
-    if not game.new:
+    if not game.new and not game.promote: 
+        #Check that game is not in a new state, undo state, or promotion state
         move = request.form['move']
 
+    elif game.promote:
+        #Check if game is in promotion state
+        move = None
+        game.promotion = request.form['promote']
+
     else:
+        #Assumes game is in new or undo state
         move = None
         game.new = False
 
-    if move is None:
+    if move is None and game.promotion is None:
+        #Check if game is in new or undo state
         ui.board = game.display()
         ui.inputlabel = f'{game.turn} player: '
         return render_template('chess.html', ui=ui)  
         
-    elif move.lower() in 'kbrq':
-        game.promotepawns(move.lower()) 
-        game.next_turn()
-        ui.inputlabel = f'{game.turn} player: '
-        ui.board = game.display()
-        return render_template('chess.html', ui=ui) 
+    elif game.promotion is not None:
+        #check if game is in promotion state
+        if game.promotion.lower() in 'kbrq':
+            game.promotepawns(game.promotion.lower()) 
+            game.next_turn()
+            ui.inputlabel = f'{game.turn} player: '
+            ui.board = game.display()
+            game.promote = False
+            game.promotion = None
+            return render_template('chess.html', ui=ui) 
+        else:
+            return redirect('/play')
 
     
     else:
+        #Assusmes game in standard play state
         game.inputmove = move
         v_move = game.prompt()
         
@@ -58,6 +73,8 @@ def play():
             end_piece = game.get_piece(end)
             tuplee = (start,start_piece),(end,end_piece)
             movehistory.push((tuplee))
+            movetype = game.movetype(start, end)
+            # print(f'movetype: {movetype}')
             game.update(start, end)
             if game.winner is None:
                 piece = game.get_piece(end)
@@ -88,6 +105,7 @@ def promote():
     can chose to promote the piece to a desired one
     '''
     ui.board = game.display()
+    game.promote = True
     return render_template('promotion.html', ui=ui)
 
 @app.route('/undo', methods=['POST', 'GET'])

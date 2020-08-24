@@ -179,6 +179,8 @@ class Board:
         self.checkmate = None
         self.inputmove = None
         self.new = True
+        self.promote = False
+        self.promotion = None
     
     def coords(self):
         return list(self._position.keys())
