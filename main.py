@@ -74,11 +74,9 @@ def play():
             end_piece = game.get_piece(end)
             tuplee = (start,start_piece),(end,end_piece)
             movehistory.push((tuplee))
-            movetype = game.movetype(start, end)
             # print(f'movetype: {movetype}')
             game.update(start, end)
             if game.winner is None:
-                piece = game.get_piece(end)
                 # print(f'MoveHistory: {movehistory.data}')
                 if game.checkforpromotion():
                     return redirect('/promote')
