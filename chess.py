@@ -182,6 +182,16 @@ class Board:
         self.promote = False
         self.promotion = None
     
+    def reset(self):
+        for i in self.coords():
+            self.remove(i)
+        self.winner = None
+        self.checkmate = None
+        self.inputmove = None
+        self.new = True
+        self.promote = False
+        self.promotion = None
+
     def coords(self):
         return list(self._position.keys())
 

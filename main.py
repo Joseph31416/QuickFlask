@@ -17,6 +17,7 @@ def newgame():
     # Note that in Python, objects and variables
     # in the global space are available to
     # top-level functions
+    
     game.start()
     ui.board = game.display()
     ui.inputlabel = f'{game.turn} player: '
@@ -87,6 +88,7 @@ def play():
                     ui.board = game.display()
                     return render_template('chess.html', ui=ui)  
             else:
+                game.reset()
                 return render_template('winner.html')
         else:
             ui.errmsg = 'Invalid move. Please enter your move in the following format: __ __, _ represents a digit from 0-7.'
