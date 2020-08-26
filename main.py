@@ -117,7 +117,8 @@ def undo():
         end = coord[1][0]
         start_piece = coord[0][1]
         end_piece = coord[1][1]
-
+        
+        #debug:
         # print(f'start_coord: {start}')
         # print(f'end_coord: {end}')
         # print(f'start_piece: {start_piece}')
@@ -125,14 +126,13 @@ def undo():
         # print(f'piece_at_end: {game.get_piece(end)}')
 
         if end_piece is None:
-            # print(f'end_coord_in_if: {end}')
             game.remove(end)
             game.add(start, start_piece)
 
         else:
-            game.add(start,end_piece)
             game.remove(end)
-            game.add(end,start_piece)
+            game.add(start,start_piece)
+            game.add(end,end_piece)
         
         game.next_turn()
 
