@@ -34,9 +34,12 @@ def play():
         move = request.form['move']
 
     elif game.promote:
-        #Check if game is in promotion state
+        #Check if game is in promotionprompt state
         move = None
         game.promotion = request.form['promote']
+        if game.promotion == '':
+            ui.errmsg = "Empty entry. Enter k, b, r or q."
+            return redirect('/promote')
 
     else:
         #Assumes game is in new or undo state
@@ -56,11 +59,13 @@ def play():
             game.next_turn()
             ui.inputlabel = f'{game.turn} player: '
             ui.board = game.display()
+            ui.errmsg = None
             game.promote = False
             game.promotion = None
             return render_template('chess.html', ui=ui) 
         else:
-            return redirect('/play')
+            ui.errmsg = "Invalid entry. Enter only k, b, r or q."
+            return redirect('/promote')
 
     
     else:

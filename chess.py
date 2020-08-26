@@ -394,8 +394,7 @@ class Board:
         self.add((7, 0), Rook(colour))
         for x in range(0, 8):
             self.add((x, 1), Pawn(colour))
-        
-        # self.add((5, 0), Pawn('white'))
+
         self.turn = 'white'
 
         for piece in self.pieces():
